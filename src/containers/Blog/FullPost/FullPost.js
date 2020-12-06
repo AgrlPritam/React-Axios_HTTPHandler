@@ -8,9 +8,18 @@ class FullPost extends Component {
         loadedPost: null
     }
     componentDidMount() {
-        //Below logic is to avoid infinite loop (check network in browser console) which will be created if we try to update the state inside componentDidUpdate
+        console.log(this.props);
+        this.loadData();
+    }
+
+    componentDidUpdate() {
+        this.loadData();
+    }
+
+    loadData() {
+         //Below logic is to avoid infinite loop (check network in browser console) which will be created if we try to update the state inside componentDidUpdate
         if(this.props.match.params.id) {
-            if((!this.state.loadedPost) || (this.state.loadedPost && this.state.loadedPost.id !== this.props.match.params.id)) {
+            if((!this.state.loadedPost) || (this.state.loadedPost && this.state.loadedPost.id !== +this.props.match.params.id)) {
                 axios.get('/posts/'+this.props.match.params.id)
                 .then(response => {
                     this.setState({loadedPost: response.data})
@@ -21,7 +30,7 @@ class FullPost extends Component {
     }
 
     postDeleteHandler = () => {
-        axios.delete('/posts/'+this.props.id)
+        axios.delete('/posts/'+this.props.match.params.id)
             .then(response => {
                 console.log(response);
             })
